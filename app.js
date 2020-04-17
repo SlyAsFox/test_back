@@ -1070,8 +1070,21 @@ app.get('/update', asyncHandler(async (req, res) => {
     //
 }));
 
-app.get('/:shopId/categories', asyncHandler(async (req, res) => {
+app.get('/getParsedData', asyncHandler(async (req, res) => {
+    axios.get(dotenv.parsed.DATA_URL)
+        .then( (response) => {
+            parseString(response.data, (err, result) => {
+                res.send({
+                    data : result
+                });
+            });
+        })
+        .catch( (err) => {
+            console.log(`[AXIOS ERROR]: ${err}`)
+        });
+}));
 
+app.get('/:shopId/categories', asyncHandler(async (req, res) => {
     firestore.collection(req.params.shopId).doc('shop').collection('categories').doc('category').get()
         .then( (doc) => {
             res.send({
@@ -1081,22 +1094,6 @@ app.get('/:shopId/categories', asyncHandler(async (req, res) => {
         .catch((err) => {
                     console.log(`Error getting documents from ${req.params.shopId}/shop/categories/category', ${err}`);
                 });
-
-    // firestore.collection(req.params.shopId).doc('shop').collection('categories').doc('category').get()
-    //     .then((snapshot) => {
-    //         // let categories = [];
-    //         // snapshot.forEach((doc) => {
-    //         //     categories.push({
-    //         //         id: doc.id,
-    //         //         data: doc.data()
-    //         //     })
-    //         //     // console.log(doc.id, '=>', doc.data());
-    //         // });
-    //         res.send(snapshot)
-    //     })
-    //     .catch((err) => {
-    //         console.log(`Error getting documents from ${req.params.shopId}/shop/categories/category', ${err}`);
-    //     });
 }));
 
 app.get('/:shopId/offers', asyncHandler(async (req, res) => {
