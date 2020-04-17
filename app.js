@@ -991,16 +991,16 @@ app.get('/update', asyncHandler(async (req, res) => {
         }
     };
 
-    // axios.get('https://manset.com.ua/index.php?route=extension/feed/neoseo_product_feed&name=rozetka')
-    //     .then( (response) => {
-    //         parseString(response.data, (err, result) => {
-    //             data = result
-    //             // res.send(data);
-    //         });
-    //     })
-    //     .catch( (err) => {
-    //         console.log(`[AXIOS ERROR]: ${err}`)
-    //     });
+    axios.get(dotenv.parsed.DATA_URL)
+        .then( (response) => {
+            parseString(response.data, (err, result) => {
+                data = result
+                // res.send(data);
+            });
+        })
+        .catch( (err) => {
+            console.log(`[AXIOS ERROR]: ${err}`)
+        });
     const shopId = Object.keys(data)[0];
 
 
