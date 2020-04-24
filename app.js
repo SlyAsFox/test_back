@@ -4,7 +4,7 @@ const axios = require('axios');
 const parseString = require('xml2js').parseString;;
 const asyncHandler = require('express-async-handler');
 const dotenv = require('./dotenv');
-
+const cors = require('cors');
 const firebaseApp = firebase.initializeApp({
     apiKey: dotenv.parsed.API_KEY,
     authDomain: dotenv.parsed.AUTH_DOMAIN,
@@ -15,10 +15,11 @@ const firebaseApp = firebase.initializeApp({
     appId: dotenv.parsed.APP_ID,
     measurementId: dotenv.parsed.MEASUREMENT_ID,
 });
-
 const firestore = firebaseApp.firestore();
 
 const app = express();
+
+app.use(cors());
 
 app.use((req, res, next) => {
     console.log(req.method, req.url);
@@ -991,16 +992,16 @@ app.get('/update', asyncHandler(async (req, res) => {
         }
     };
 
-    axios.get(dotenv.parsed.DATA_URL)
-        .then( (response) => {
-            parseString(response.data, (err, result) => {
-                data = result
-                // res.send(data);
-            });
-        })
-        .catch( (err) => {
-            console.log(`[AXIOS ERROR]: ${err}`)
-        });
+    // axios.get(dotenv.parsed.DATA_URL)
+    //     .then( (response) => {
+    //         parseString(response.data, (err, result) => {
+    //             data = result
+    //             // res.send(data);
+    //         });
+    //     })
+    //     .catch( (err) => {
+    //         console.log(`[AXIOS ERROR]: ${err}`)
+    //     });
     const shopId = Object.keys(data)[0];
 
 
@@ -1056,18 +1057,6 @@ app.get('/update', asyncHandler(async (req, res) => {
     res.send({
         created: 'OK'
     })
-
-    // рабочий вариант как на скрине у Андрея
-    // firestore.collection('catalog').doc(Object.keys(data)[0]).set(data[Object.keys(data)[0]])
-    //     .then(ref => {
-    //         res.send({
-    //             created: 'OK'
-    //         })
-    //     })
-    //     .catch((err) => {
-    //         console.log('Error setting documents', err);
-    //     });
-    //
 }));
 
 app.get('/getParsedData', asyncHandler(async (req, res) => {
